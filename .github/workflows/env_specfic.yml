@@ -22,7 +22,7 @@ jobs:
           docker build -t $DOCKER_REGISTRY/$APP_NAME:$GITHUB_SHA .
 
   deploy-production:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
       ENVIRONMENT: "production"
