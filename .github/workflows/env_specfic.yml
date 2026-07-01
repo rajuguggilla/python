@@ -1,0 +1,36 @@
+name: Environment-specific Deployment
+on:
+  workflow_dispatch:
+env:
+  # Global configuration
+  APP_NAME: "my-awesome-app"
+  DOCKER_REGISTRY: "ghcr.io"
+
+jobs:
+  deploy-staging:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: "staging"
+      API_URL: "https://api.staging.example.com"
+      DATABASE_TIER: "basic"
+    steps:
+      - name: Deploy to staging
+        run: |
+          echo "Deploying $APP_NAME to $ENVIRONMENT"
+          echo "API URL: $API_URL"
+          docker build -t $DOCKER_REGISTRY/$APP_NAME:$GITHUB_SHA .
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: "production"
+      API_URL: "https://api.example.com"
+      DATABASE_TIER: "premium"
+    steps:
+      - name: Deploy to production
+        run: |
+          echo "Deploying $APP_NAME to $ENVIRONMENT"
+          echo "API URL: $API_URL"
+          docker build -t $DOCKER_REGISTRY/$APP_NAME:latest .
