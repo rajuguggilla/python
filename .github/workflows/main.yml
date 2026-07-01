@@ -1,0 +1,14 @@
+name: simple workflow
+
+on:
+  push: 
+    branches: [main]
+  workflow_dispatch:
+    
+jobs:
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: print hello
+        run: echo "Hello.."
