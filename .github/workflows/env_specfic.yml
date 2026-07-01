@@ -1,36 +1,23 @@
 name: Environment-specific Deployment
 on:
   workflow_dispatch:
-env:
-  # Global configuration
-  APP_NAME: "my-awesome-app"
-  DOCKER_REGISTRY: "ghcr.io"
-
 jobs:
-  deploy-staging:
-    if: github.ref == 'refs/heads/develop'
+  dynamic_variables:
     runs-on: ubuntu-latest
-    env:
-      ENVIRONMENT: "staging"
-      API_URL: "https://api.staging.example.com"
-      DATABASE_TIER: "basic"
     steps:
-      - name: Deploy to staging
+      - name: Generate build metadata
+        id: metadata
         run: |
-          echo "Deploying $APP_NAME to $ENVIRONMENT"
-          echo "API URL: $API_URL"
-          docker build -t $DOCKER_REGISTRY/$APP_NAME:$GITHUB_SHA .
+          BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          BUILD_NUMBER=$GITHUB_RUN_NUMBER
+          VERSION_TAG=${GITHUB_REF#refs/tags/}
 
-  deploy-production:
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    env:
-      ENVIRONMENT: "production"
-      API_URL: "https://api.example.com"
-      DATABASE_TIER: "premium"
-    steps:
-      - name: Deploy to production
+          echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+          echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_ENV
+
+      - name: Use generated variables
         run: |
-          echo "Deploying $APP_NAME to $ENVIRONMENT"
-          echo "API URL: $API_URL"
-          docker build -t $DOCKER_REGISTRY/$APP_NAME:latest .
+          echo "Build Date: $BUILD_DATE"
+          echo "Build Number: $BUILD_NUMBER"
+          echo "Version: $VERSION_TAG"
