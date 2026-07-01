@@ -1,0 +1,28 @@
+name: Multi platform configuration variables
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            BUILD_COMMAND: "make build-linux"
+            PACKAGE_EXT: ".deb"
+          - os: windows-latest
+            BUILD_COMMAND: "msbuild /p:Configuration=Release"
+            PACKAGE_EXT: ".msi"
+          - os: macos-latest
+            BUILD_COMMAND: "xcodebuild -configuration Release"
+            PACKAGE_EXT: ".dmg"
+
+    runs-on: ${{ matrix.os }}
+    env:
+      BUILD_COMMAND: ${{ matrix.BUILD_COMMAND }}
+      PACKAGE_EXT: ${{ matrix.PACKAGE_EXT }}
+
+    steps:
+      - name: Build application
+        run: ${{ env.BUILD_COMMAND }}
