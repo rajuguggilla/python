@@ -7,10 +7,10 @@ on:
     
 jobs:
   build:
-  strategy:
-    matrix:
-      os: [ubuntu-latest, ubuntu-20.04, windows-latest]
-      images: [hello-world, alpine]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-20.04, windows-latest]
+        images: [hello-world, alpine]
     name: Build Application
     runs-on: ${{ matrix.os }}
     steps:
