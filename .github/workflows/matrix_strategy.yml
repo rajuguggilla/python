@@ -11,13 +11,13 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        os: [ubuntu-latest, ubuntu-20.04, windows-latest]
-        images: [hello-world, alpine]
+        os: [ubuntu-latest, windows-latest]
+        images: [hello-world, alpine, python]
         exclude:
           - images: alpine
             os: windows-latest
         include:
-          - images: node
+          - images: nginx
             os: ubuntu-latest
     name: Build Application - ${{ matrix.os }} - ${{ matrix.images }}
     runs-on: ${{ matrix.os }}
