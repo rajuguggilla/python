@@ -14,5 +14,5 @@ jobs:
     name: Build Application
     runs-on: ${{ matrix.os }}
     steps:
-      - name: print docker info
-        run: docker info
+    - name: print docker info
+      run: docker info
